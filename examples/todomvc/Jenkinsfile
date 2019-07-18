@@ -1,0 +1,21 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Code-Checkout') {
+            steps {
+                   git branch: 'credentialsId: '233b8092-514f-4257-a54b-4c4fcee709c6', url: 'https://github.com/tseringnam/redux-1.git'
+            }
+        }
+        stage('Build') {
+            steps {
+                sh 'cd examples/todomvc; npm install ; cd ..; tar -czf todomvc-${BUILD_NUMBER}.tar.gz todomvc'
+            }
+        }
+        stage('Deploy') {
+            steps {
+                sh 'export AWS_DEFAULT_PROFILE=tsering; aws s3 cp ${WORKSPACE}/examples/todomvc-${BUILD_NUMBER}.tar.gz  s3://todomvc-bucket/'
+            }
+        }
+    }
+}
